@@ -5,9 +5,7 @@ from easygoogletranslate import EasyGoogleTranslate
 
 import utils
 
-google_lang = {
-    'zh': 'zh-CN',
-}
+google_lang = {"zh-cn": "zh-cn", "zh-tw": "zh-tw", "en": "en", "ru": "ru"}
 
 
 class Translator:
@@ -18,7 +16,8 @@ class Translator:
 
     def translate(self, query):
         raise NotImplementedError(
-            'translate method must be implemented in the child class')
+            "translate method must be implemented in the child class"
+        )
 
 
 class GoogleTranslate(Translator):
@@ -41,53 +40,53 @@ class BaiduTranslate(Translator):
         super().__init__(from_lang, to_lang)
         self.src = from_lang
         self.dst = to_lang
-        self.app_id = utils.get_configuration('baidu', 'appid')
-        self.app_key = utils.get_configuration('baidu', 'appkey')
-        self.url = 'https://fanyi-api.baidu.com/api/trans/vip/translate'
+        self.app_id = utils.get_configuration("baidu", "appid")
+        self.app_key = utils.get_configuration("baidu", "appkey")
+        self.url = "https://fanyi-api.baidu.com/api/trans/vip/translate"
 
     def translate(self, query):
         salt = random.randint(32768, 65536)
         sign = utils.md5_sign(self.app_id + query + str(salt) + self.app_key)
         payload = {
-            'appid': self.app_id,
-            'q': query,
-            'from': self.src,
-            'to': self.dst,
-            'salt': salt,
-            'sign': sign
+            "appid": self.app_id,
+            "q": query,
+            "from": self.src,
+            "to": self.dst,
+            "salt": salt,
+            "sign": sign,
         }
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
         rsp = requests.post(self.url, params=payload, headers=headers)
-        result = rsp.json().get('trans_result', [])
+        result = rsp.json().get("trans_result", [])
         if not result:
-            return ''
+            return ""
         result_list = []
         for i in result:
-            result_list.append(i.get('dst', ''))
-        result_text = '\n'.join(result_list)
+            result_list.append(i.get("dst", ""))
+        result_text = "\n".join(result_list)
         return result_text
 
 
 def create_translator(translator_type, from_lang, to_lang):
-    if translator_type == 'google':
+    if translator_type == "google":
         return GoogleTranslate(from_lang, to_lang)
-    elif translator_type == 'baidu':
+    elif translator_type == "baidu":
         return BaiduTranslate(from_lang, to_lang)
     else:
         raise ValueError("Invalid translator type")
 
 
-if __name__ == '__main__':
-    test_content_zh = '这是一个测试，非常简单的测试。\n日期：2023.12.25'
-    test_content_en = 'This is a test, a very simple test.\nDate: 2023.12.25'
-    client = create_translator('google', 'zh', 'en')
-    print(f'google zh->en: {client.translate(test_content_zh)}')
+if __name__ == "__main__":
+    test_content_zh = "这是一个测试，非常简单的测试。\n日期：2023.12.25"
+    test_content_en = "This is a test, a very simple test.\nDate: 2023.12.25"
+    client = create_translator("google", "zh", "en")
+    print(f"google zh->en: {client.translate(test_content_zh)}")
 
-    client = create_translator('google', 'en', 'zh')
-    print(f'google en->zh: {client.translate(test_content_en)}')
+    client = create_translator("google", "en", "zh")
+    print(f"google en->zh: {client.translate(test_content_en)}")
 
-    client = create_translator('baidu', 'zh', 'en')
-    print(f'baidu zh->en: {client.translate(test_content_zh)}')
+    client = create_translator("baidu", "zh", "en")
+    print(f"baidu zh->en: {client.translate(test_content_zh)}")
 
-    client = create_translator('baidu', 'en', 'zh')
-    print(f'baidu en->zh: {client.translate(test_content_en)}')
+    client = create_translator("baidu", "en", "zh")
+    print(f"baidu en->zh: {client.translate(test_content_en)}")
