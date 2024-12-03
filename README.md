@@ -33,7 +33,11 @@ Build Windows/Linux/macOS executable binary file via PyInstaller.
 
 1. Install PyInstaller
     ``` shell
+    # 打包工具
     $ pip install pyinstaller
+
+    # 打包時自動將png轉成對應平台的icon
+    $ pip install pillow
     ```
 
 2. Prepare UPX (Optional)
@@ -43,6 +47,9 @@ Build Windows/Linux/macOS executable binary file via PyInstaller.
 3. Package project
     ```shell
     $ flet pack main.py
+
+    # 如果需要icon 跟 換name
+    $ flet pack main.py --icon ./icon.png --name excel-trans 
     ```
 
 You can find the packaged `main` in `dist` dir.
