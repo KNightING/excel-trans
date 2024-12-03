@@ -21,6 +21,17 @@ $ git clone https://github.com/gymgle/excel-trans.git
 
 # 2. Install pip requirements. 
 $ cd excel-trans
+
+# 建立虛擬環境
+$ python -m venv ./venv
+
+# 切換虛擬環境
+# in windows 須執行 ${env_name}/Scripts/activate.ps1
+$ ./venv/Scripts/activate.ps1
+
+# in mac and linux, 使用 source 指令執行路徑 ${env_name}/bin/activate
+$ source ./venv/bin/activate
+
 $ pip3 install -r requirements.txt
 
 # 3. Try it!
